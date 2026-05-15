@@ -1,8 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { supabase, FREE_ANIMAL_LISTINGS } from '@/lib/supabase'
-import { useAuth } from '@/components/auth/AuthContext'
+import { supabase } from '@/lib/supabase'
 
 interface AnimalListing {
   id: string
@@ -16,7 +15,6 @@ interface AnimalListing {
 export function AnimalListings() {
   const [listings, setListings] = useState<AnimalListing[]>([])
   const [loading, setLoading] = useState(true)
-  const { user } = useAuth()
 
   useEffect(() => {
     fetchListings()

@@ -10,7 +10,7 @@ export function CreateQurbaniListing() {
   const { user } = useAuth()
   const router = useRouter()
   const [loading, setLoading] = useState(false)
-  const { register, handleSubmit, formState: { errors } } = useForm()
+  const { register, handleSubmit } = useForm()
 
   const onSubmit = async (data: any) => {
     if (!user) {

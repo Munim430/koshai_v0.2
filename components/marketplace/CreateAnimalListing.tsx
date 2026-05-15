@@ -24,11 +24,7 @@ export function CreateAnimalListing() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [feeEstimate, setFeeEstimate] = useState(0)
-  const { register, handleSubmit, formState: { errors }, watch } = useForm({
-    defaultValues: {
-      animal_type: 'cow' as const,
-    }
-  })
+  const { register, handleSubmit, formState: { errors }, watch } = useForm<any>()
 
   const animalType = watch('animal_type')
 
