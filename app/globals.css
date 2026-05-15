@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  background-color: #FFFFFF;
+  font-family: 'Hind Siliguri', sans-serif;
+}
+
+body {
+  background-color: #FFFFFF;
+  color: #000000;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Mobile optimization for Bangladeshi networks */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Button default styles */
+button {
+  font-family: 'Hind Siliguri', sans-serif;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+input, textarea, select {
+  font-family: 'Hind Siliguri', sans-serif;
+}
+
+/* PWA theme color */
+@supports (padding: max(0px)) {
+  body {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+    padding-top: max(0px, env(safe-area-inset-top));
+  }
+}

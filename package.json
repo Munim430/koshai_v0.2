@@ -1,0 +1,39 @@
+{
+  "name": "koshai",
+  "version": "1.0.0-beta",
+  "description": "Bangladesh's largest platform for animal marketplace, butcher services, and Qurbani sharing",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "next": "^16.0.0",
+    "@supabase/supabase-js": "^2.105.4",
+    "@supabase/auth-helpers-nextjs": "^0.15.0",
+    "react-hook-form": "^7.75.0",
+    "zod": "^4.4.3",
+    "zustand": "^5.0.13",
+    "swr": "^2.4.1",
+    "axios": "^1.16.1",
+    "next-pwa": "^5.6.0",
+    "react-toastify": "^11.1.0",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.6.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "tailwindcss": "^3.4.0",
+    "postcss": "^8.4.0",
+    "autoprefixer": "^10.4.0",
+    "eslint": "^8.0.0",
+    "eslint-config-next": "^16.0.0"
+  }
+}
