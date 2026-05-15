@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
-import { Header } from '@/components/navigation/Header'
 import { BottomNav } from '@/components/navigation/BottomNav'
 import { AuthProvider } from '@/components/auth/AuthContext'
 import { PWAInstallPrompt } from '@/components/PWAInstallPrompt'
@@ -47,8 +46,7 @@ export default function RootLayout({
       <body className="bg-background text-foreground">
         <ErrorBoundary>
           <AuthProvider>
-            <Header />
-            <div className="flex flex-col min-h-screen pb-24">
+            <div className="flex flex-col min-h-screen pb-20">
               {children}
             </div>
             <BottomNav />

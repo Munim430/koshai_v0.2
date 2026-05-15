@@ -1,9 +1,12 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState } from 'react'
+import { User } from '@supabase/supabase-js'
+import { supabase } from '@/lib/supabase'
+import { isAdminUser } from '@/lib/auth'
 
 interface AuthContextType {
-  user: any | null
+  user: User | null
   loading: boolean
   isAdmin: boolean
   signIn: (email: string, password: string) => Promise<void>
@@ -14,33 +17,46 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<any | null>(null)
+  const [user, setUser] = useState<User | null>(null)
   const [isAdmin, setIsAdmin] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Mock auth for now - will be connected to Supabase
-    setLoading(false)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (_event, session) => {
+        setUser(session?.user ?? null)
+        if (session?.user?.email) {
+          const admin = await isAdminUser(session.user.email)
+          setIsAdmin(admin)
+        } else {
+          setIsAdmin(false)
+        }
+        setLoading(false)
+      }
+    )
+
+    return () => {
+      subscription?.unsubscribe()
+    }
   }, [])
 
   const signIn = async (email: string, password: string) => {
-    console.log('[v0] Sign in:', email)
-    // Mock sign in
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) throw error
   }
 
   const signUp = async (email: string, password: string) => {
-    console.log('[v0] Sign up:', email)
-    // Mock sign up
+    const { error } = await supabase.auth.signUp({ email, password })
+    if (error) throw error
   }
 
-  const signOut = async () => {
-    console.log('[v0] Sign out')
-    setUser(null)
-    setIsAdmin(false)
+  const signOutUser = async () => {
+    const { error } = await supabase.auth.signOut()
+    if (error) throw error
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, isAdmin, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ user, loading, isAdmin, signIn, signUp, signOut: signOutUser }}>
       {children}
     </AuthContext.Provider>
   )
@@ -49,7 +65,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext)
   if (!context) {
-    return { user: null, loading: false, isAdmin: false, signIn: async () => {}, signUp: async () => {}, signOut: async () => {} }
+    throw new Error('useAuth must be used within AuthProvider')
   }
   return context
 }

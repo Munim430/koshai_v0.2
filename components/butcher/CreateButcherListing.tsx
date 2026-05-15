@@ -10,7 +10,7 @@ export function CreateButcherListing() {
   const { user } = useAuth()
   const router = useRouter()
   const [loading, setLoading] = useState(false)
-  const { register, handleSubmit } = useForm()
+  const { register, handleSubmit, formState: { errors } } = useForm()
 
   const onSubmit = async (data: any) => {
     if (!user) {

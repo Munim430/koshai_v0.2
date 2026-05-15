@@ -1,22 +1,42 @@
-import { NextResponse } from 'next/server'
+import { supabase } from '@/lib/supabase'
+import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET() {
   try {
-    const mockData = [
-      { id: 1, name: 'আলিম কসাই', phone: '01712345678', location: 'ঢাকা', experience: 5, status: 'active' },
-      { id: 2, name: 'করিম মাস্টার', phone: '01898765432', location: 'চট্টগ্রাম', experience: 10, status: 'active' },
-    ]
-    return NextResponse.json({ data: mockData })
+    const { data, error } = await supabase
+      .from('butcher_listings')
+      .select('*')
+      .eq('status', 'active')
+      .order('created_at', { ascending: false })
+      .limit(50)
+
+    if (error) throw error
+
+    return NextResponse.json({ data })
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json(
+      { error: error.message },
+      { status: 500 }
+    )
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(req: NextRequest) {
   try {
-    const body = await request.json()
-    return NextResponse.json({ success: true, id: Math.random() }, { status: 201 })
+    const body = await req.json()
+
+    const { data, error } = await supabase
+      .from('butcher_listings')
+      .insert([body])
+      .select()
+
+    if (error) throw error
+
+    return NextResponse.json({ data }, { status: 201 })
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 400 })
+    return NextResponse.json(
+      { error: error.message },
+      { status: 500 }
+    )
   }
 }

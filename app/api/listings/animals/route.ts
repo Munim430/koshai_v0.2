@@ -1,22 +1,50 @@
-import { NextResponse } from 'next/server'
+import { supabase } from '@/lib/supabase'
+import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET() {
   try {
-    const mockData = [
-      { id: 1, title: 'দেশী গাভী', price: 85000, location: 'ঢাকা', animal_type: 'cow', status: 'active' },
-      { id: 2, title: 'পাঠা ছাগল', price: 35000, location: 'চট্টগ্রাম', animal_type: 'goat', status: 'active' },
-    ]
-    return NextResponse.json({ data: mockData })
+    const { data, error } = await supabase
+      .from('animal_listings')
+      .select('*')
+      .eq('status', 'active')
+      .order('created_at', { ascending: false })
+      .limit(50)
+
+    if (error) throw error
+
+    return NextResponse.json({ data })
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json(
+      { error: error.message },
+      { status: 500 }
+    )
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(req: NextRequest) {
   try {
-    const body = await request.json()
-    return NextResponse.json({ success: true, id: Math.random() }, { status: 201 })
+    const body = await req.json()
+    const authHeader = req.headers.get('Authorization')
+    
+    if (!authHeader) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
+
+    const { data, error } = await supabase
+      .from('animal_listings')
+      .insert([body])
+      .select()
+
+    if (error) throw error
+
+    return NextResponse.json({ data }, { status: 201 })
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 400 })
+    return NextResponse.json(
+      { error: error.message },
+      { status: 500 }
+    )
   }
 }

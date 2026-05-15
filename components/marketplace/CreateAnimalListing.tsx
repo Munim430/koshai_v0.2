@@ -24,7 +24,11 @@ export function CreateAnimalListing() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [feeEstimate, setFeeEstimate] = useState(0)
-  const { register, handleSubmit, formState: { errors }, watch } = useForm<any>()
+  const { register, handleSubmit, formState: { errors }, watch } = useForm({
+    defaultValues: {
+      animal_type: 'cow' as const,
+    }
+  })
 
   const animalType = watch('animal_type')
 
@@ -75,7 +79,7 @@ export function CreateAnimalListing() {
           className="w-full px-3 py-2 border border-accent/20 rounded-lg"
           placeholder="গাভী, ছাগল, ভেড়া..."
         />
-        {errors.title?.message && <span className="text-red-500 text-sm">{String(errors.title.message)}</span>}
+        {errors.title && <span className="text-red-500 text-sm">{errors.title.message}</span>}
       </div>
 
       <div className="grid grid-cols-2 gap-4">
