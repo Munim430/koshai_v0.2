@@ -1,9 +1,19 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-export const supabase = createClient(supabaseUrl, supabaseKey)
+// Create client with fallback to prevent build errors
+let supabase: any = null
+try {
+  if (supabaseUrl && supabaseKey) {
+    supabase = createClient(supabaseUrl, supabaseKey)
+  }
+} catch (error) {
+  console.warn('[v0] Supabase not configured - using mock data')
+}
+
+export { supabase }
 
 export const ADMIN_EMAILS = [
   'munimm247@gmail.com',

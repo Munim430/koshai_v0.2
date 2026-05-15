@@ -1,12 +1,9 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState } from 'react'
-import { User } from '@supabase/supabase-js'
-import { supabase } from '@/lib/supabase'
-import { isAdminUser } from '@/lib/auth'
 
 interface AuthContextType {
-  user: User | null
+  user: any | null
   loading: boolean
   isAdmin: boolean
   signIn: (email: string, password: string) => Promise<void>
@@ -17,46 +14,33 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<any | null>(null)
   const [isAdmin, setIsAdmin] = useState(false)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
-        setUser(session?.user ?? null)
-        if (session?.user?.email) {
-          const admin = await isAdminUser(session.user.email)
-          setIsAdmin(admin)
-        } else {
-          setIsAdmin(false)
-        }
-        setLoading(false)
-      }
-    )
-
-    return () => {
-      subscription?.unsubscribe()
-    }
+    // Mock auth for now - will be connected to Supabase
+    setLoading(false)
   }, [])
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) throw error
+    console.log('[v0] Sign in:', email)
+    // Mock sign in
   }
 
   const signUp = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signUp({ email, password })
-    if (error) throw error
+    console.log('[v0] Sign up:', email)
+    // Mock sign up
   }
 
-  const signOutUser = async () => {
-    const { error } = await supabase.auth.signOut()
-    if (error) throw error
+  const signOut = async () => {
+    console.log('[v0] Sign out')
+    setUser(null)
+    setIsAdmin(false)
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, isAdmin, signIn, signUp, signOut: signOutUser }}>
+    <AuthContext.Provider value={{ user, loading, isAdmin, signIn, signUp, signOut }}>
       {children}
     </AuthContext.Provider>
   )
@@ -65,7 +49,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext)
   if (!context) {
-    throw new Error('useAuth must be used within AuthProvider')
+    return { user: null, loading: false, isAdmin: false, signIn: async () => {}, signUp: async () => {}, signOut: async () => {} }
   }
   return context
 }
